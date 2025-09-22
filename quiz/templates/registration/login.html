@@ -6,11 +6,29 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Cadastro de úsuario</h1>
-    <form action="" method="post">
-        {$ csrf_token $}
+    <h1>Página de Login</h1>
+
+    {% if form.errors %}
+        <p>Seu nome e senha não correspondem. Por favor, 
+            tente novamente</p>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>Sua conta não tem acesso a esta página. 
+                Please login com uma conta que tenha acesso.
+            </p>
+        {% else %}
+            <p>Por favor, faça o login para ver esta página.</p>
+        {% endif %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Cadastrar</button>
+        <button type="submit">Login</button>
     </form>
+
+    <a href="{% url  'register_user' %}">Registre-se</a>
+
 </body>
 </html>
