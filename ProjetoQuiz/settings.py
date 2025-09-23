@@ -19,7 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'quiz',
+    'quiz_player',
+    'quiz_admin',
     'rest_framework',
 ]
 
@@ -64,6 +65,13 @@ DATABASES = {
 }
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -95,7 +103,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Após fazer login, eu redireciono pra página principal!
-LOGIN_REDIRECT_URL = '/api/home/'
+LOGIN_REDIRECT_URL = '/quiz/home/'
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
