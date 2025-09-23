@@ -46,4 +46,4 @@ class UserScore(models.Model):
     score = models.IntegerField()
 
     def __str__(self):
-        return f"{self.user.username} s score for {self.quiz.title}"
+        return f"{self.user.username}"

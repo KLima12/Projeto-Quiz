@@ -37,10 +37,10 @@ def home(request):
 
 @login_required
 def question(request, id):
-    """Usuario manda o id pra minha question, eu vou filtrar no meu bd question todos textos que tenha essa question"""
-    """Esse question ele procura as questõe relacionadas ao quiz"""
     question = Question.objects.filter(quiz=id)
-
+    quiz = Quiz.objects.get(id=id)
+    print(quiz)
+    print(f"{request.user}")
     if request.method == "POST":
         score = 0
         # Retorna um dicionario com todos os dados
@@ -51,6 +51,15 @@ def question(request, id):
                 answer = AnswerChoice.objects.get(id=id_da_resposta)
                 if answer.is_correct:
                     score += 1
-        print(f" score final: {score}")
+
+        user_score, created = UserScore.objects.get_or_create(
+            user=request.user,
+            quiz=quiz,
+            defaults={'score': score},
+        )
+
+        if not created:
+            user_score.score = score
+            user_score.save()
 
     return render(request, 'question/question.html', context={'question': question})
