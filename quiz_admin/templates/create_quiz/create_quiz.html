@@ -8,13 +8,6 @@
     <title>Create Quiz</title>
 </head>
 <body>
-    {% if user.is_authenticated %}
-        <li>{{user.get_username}}</li>
-        <form action="{% url 'logout' %}?next={{ request.path }}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="link-like-button">Logout</button>
-        </form>
-    {% endif %}
     <ul id="lista">
 
     </ul>
@@ -27,6 +20,6 @@
         <input type="submit" value="Salvar">
     </form>
 
-    <script src="{% static 'js/create_quiz/index.js' %}"defer></script>
+    <script src="{% static 'js/create_quiz/script.js' %}"defer></script>
 </body>
 </html>

@@ -102,15 +102,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Após fazer login, eu redireciono pra página principal!
-LOGIN_REDIRECT_URL = '/quiz/home/'
-
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -34,26 +34,8 @@ function renderAllQuizes(allQuizzes) {
 
 
 async function fetchAllQuizzes() {
-    const acessToken = localStorage.getItem('accessToken');
-    if (!acessToken) { 
-        console.log("Nenhum token de acesso encontrado. Redirecionando para login.");
-        window.location.href = '/accounts/login/';
-        return;
-    }
     try { 
-        const response = await fetch(`${baseUrl}`, { 
-            method: 'GET', 
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${acessToken}`
-            }
-        });
-
-        if (response.status === 404) {
-            // Token expirou ou é invalido!
-            console.error("Não autorizado. O toke pode ter expirado.")
-        }
-
+        const response = await fetch(`${baseUrl}`);
         if (!response.ok) throw new Error(`Erro: ${response.status}`);
         const allQuizzes = await response.json()
         renderAllQuizes(allQuizzes);
