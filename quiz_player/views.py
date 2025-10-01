@@ -1,16 +1,9 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from django.shortcuts import render, redirect
-from .serializes import QuizSerializer
-from .models import Quiz, Question, AnswerChoice, UserScore
+from quiz_admin.models import Quiz, Question, AnswerChoice
+from .models import UserScore
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterUserForm
-# @api_view(['GET'])
-# def home(request):
-#     all_quiz = Quiz.objects.all()
-#     serializer = QuizSerializer(all_quiz, many=True)
-#     return Response(serializer.data)
 
 
 def register_user(request):
@@ -39,7 +32,6 @@ def home(request):
 def question(request, id):
     question = Question.objects.filter(quiz=id)
     quiz = Quiz.objects.get(id=id)
-    print(quiz)
     print(f"{request.user}")
     if request.method == "POST":
         score = 0

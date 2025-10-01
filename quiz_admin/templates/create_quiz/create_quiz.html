@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/create_quiz/style.css' %}">
+    <title>Create Quiz</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <li>{{user.get_username}}</li>
+        <form action="{% url 'logout' %}?next={{ request.path }}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="link-like-button">Logout</button>
+        </form>
+    {% endif %}
+    <ul id="lista">
+
+    </ul>
+    <form action="." method="post" class="form-edit">
+        {% csrf_token %}
+        <label for="quiz">Digite o nome do Quiz: </label>
+        <input type="text" name="quiz">
+        <label for="description">Descreva sobre o Quiz: </label>
+        <textarea name="idescription" id="description"></textarea>
+        <input type="submit" value="Salvar">
+    </form>
+
+    <script src="{% static 'js/create_quiz/index.js' %}"defer></script>
+</body>
+</html>
