@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'quiz_player',
     'quiz_admin',
     'rest_framework',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -110,5 +111,7 @@ STATICFILES_DIRS = [
 ]
 
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/quiz_player/home/'  # Fallback pra player home

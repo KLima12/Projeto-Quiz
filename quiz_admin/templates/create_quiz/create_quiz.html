@@ -8,15 +8,21 @@
     <title>Create Quiz</title>
 </head>
 <body>
+    <li>{{user.get_username}}</li>
+    <form action="{% url 'logout' %}?next={{ request.path }}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="link-like-button">Logout</button>
+        </form>
+    <h1>Crie os Quizzes</h1>
     <ul id="lista">
 
     </ul>
-    <form action="." method="post" class="form-edit">
+    <form action="." method="post" id="form-edit">
         {% csrf_token %}
         <label for="quiz">Digite o nome do Quiz: </label>
-        <input type="text" name="quiz">
+        <input type="text" name="text">
         <label for="description">Descreva sobre o Quiz: </label>
-        <textarea name="idescription" id="description"></textarea>
+        <textarea name="description" id="description"></textarea>
         <input type="submit" value="Salvar">
     </form>
 

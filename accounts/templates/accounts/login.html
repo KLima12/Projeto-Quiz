@@ -7,13 +7,11 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Página de Login</h1>
-    
-    <form action="." method="post" id="form_quiz">
+    <h1>Login</h1>
+    <form method="post">
         {% csrf_token %}
-        <p>{{forms.as_p}}</p>
+        {{ form.as_p }}
+        <button type="submit">Entrar</button>
     </form>
-
-
 </body>
 </html>
