@@ -8,11 +8,13 @@
     <title>Create Quiz</title>
 </head>
 <body>
-    <li>{{user.get_username}}</li>
-    <form action="{% url 'logout' %}?next={{ request.path }}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="link-like-button">Logout</button>
+    {% if user.is_authenticated %}
+        <p>Ola, {{user.username}}</p> 
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="link-logout">Logout</button>
         </form>
+    {% endif %}
     <h1>Crie os Quizzes</h1>
     <ul id="lista">
 

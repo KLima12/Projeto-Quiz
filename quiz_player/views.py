@@ -22,13 +22,13 @@ def register_user(request):
     return render(request, 'registration/register.html', context={'form': form})
 
 
-@login_required(login_url='/accounts/login/')
+@login_required
 def home(request):
     quiz = Quiz.objects.all()
     return render(request, "home/home.html", context={'quiz': quiz})
 
 
-@login_required(login_url='/accounts/login/')
+@login_required
 def question(request, id):
     question = Question.objects.filter(quiz=id)
     quiz = Quiz.objects.get(id=id)

@@ -7,5 +7,4 @@ urlpatterns = [
     path('api/', include('quiz_admin.urls')),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('accounts/', include('accounts.urls')),
 ]

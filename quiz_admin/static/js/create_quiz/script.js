@@ -17,11 +17,57 @@ function allQuizzes(quiz) {
         li.innerHTML = `
                     <strong>${quizzes.text}</strong>
         `
-
+        const btnDelete = document.createElement('button');
+        const btnEdit = document.createElement('button');
+        btnDelete.innerHTML = "Deletar";
+        btnEdit.innerHTML = "Editar";
+        li.appendChild(btnDelete);
+        li.appendChild(btnEdit);
         ul.appendChild(li);
+        
     });
 }
 
+
+async function createQuiz() {  
+    const form = document.querySelector('.form-edit');
+    form.addEventListener('submit', async function(e){ 
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+       
+        try { 
+            const response = await fetch(`${baseUrl}`, {
+                method: "POST", 
+                headers: { 
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(data),
+                credentials: 'include', // Cookie da sessão vai junto
+            });
+            if (response.ok) { 
+                alert('Quiz criado com suceo!');
+                form.reset();
+                getAllQuizzes();
+            } else { 
+                const errorData = await response.json();
+                alert(`Erro ao criar quiz: ${response.status} - ${errorData.detail || 'Verifique se é admin'}`);
+            }
+        } catch(error) { 
+            console.error('Erro no POST:', error);
+            alert('Erro ao conectar com a API');
+        }
+    });
+}
+
+// async function deleteQuiz(id) {
+//     try { 
+//         const response = await fetch(`${baseUrl}`, { 
+        
+//     })
+//     }
+// }
 
 async function getAllQuizzes() {
     try { 
@@ -36,50 +82,9 @@ async function getAllQuizzes() {
 
 }
 
+
+
 document.addEventListener('DOMContentLoaded', () => { 
     getAllQuizzes(); // Carregando a lista inicial
-    const form = document.getElementById('form-edit');
-    if (form) { 
-        form.addEventListener('submit', async (e)=> { 
-            e.preventDefault();
-
-            const token = localStorage.getItem('acessToken');
-            console.log('token: ',token)
-            if (!token) { 
-                alert('Faça login primeiro!');
-                return;
-            }
-
-            const formData = new FormData(form);
-            const data = { 
-                text: formData.get('text'),
-                description: formData.get('description')
-            };
-
-            try { 
-                const response = await fetch(`${baseUrl}`, { 
-                    method: 'POST', 
-                    headers: { 
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) { 
-                    alert('Quiz criado!');
-                    form.reset(); // Limpando o Form.
-                    getAllQuizzes(); // Aqui vou atualizar a lista na hora.
-                
-                } else { 
-                    alert('Erro ao criar quiz!');
-                } 
-            } catch(error) { 
-                console.error('Erro no submit: ', error);
-            }
-            
-        })
-    }
-
-})
+    createQuiz();
+});

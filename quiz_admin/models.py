@@ -7,7 +7,7 @@ from django.db import models
 
 class Quiz(models.Model):
     text = models.CharField(max_length=2200)
-    desciption = models.TextField()
+    description = models.TextField()
 
     def __str__(self):
         return self.text

@@ -9,11 +9,20 @@
 <body>
     <h1>Página de Login</h1>
     
-    <form action="." method="post" id="form_quiz">
+    <form action="." id="loginForm" method="POST">
         {% csrf_token %}
-        <p>{{forms.as_p}}</p>
-    </form>
 
+        {{ form.non_field_errors }}
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <label for="username">Usuário: </label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Senha: </label>
+        <input type="password" name="password" id="password" required>
+        <button type="submit">Entrar</button>
+    </form>
 
 </body>
 </html>
