@@ -2,25 +2,34 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Quiz
 from rest_framework import generics
 from .serializes import QuizSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
-
+@method_decorator(csrf_exempt, name="dispatch")
 class QuizListCreateApiView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = (IsAuthenticated,) # Protege o GET de lista e o POST
-    
-class QuizDetailUpdateDestroyApiView(generics.RetrieveDestroyAPIView): 
+
+    # Somente POST é protegido aqui
+    # Se quisesse proteger ambos, usaria: permission_classes = (IsAuthenticated,)
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]
+
+        return [AllowAny()]
+
+
+class QuizDetailUpdateDestroyApiView(generics.RetrieveDestroyAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
     permission_classes = (IsAuthenticated,)
-    
 
 
 def login_user(request):

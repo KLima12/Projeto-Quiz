@@ -1,0 +1,133 @@
+class QuizListCreateApiView(generics.ListCreateAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+
+    # Somente POST é protegido aqui
+    # Se quisesse proteger ambos, usaria: permission_classes = (IsAuthenticated,)
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]
+
+        return [AllowAny()]
+
+
+Aqui eu protegi a minha QuizListCreateApiView. Só GET é público, POST não!
+
+Criei a rota para ela ser acessada.
+path('', views.QuizListCreateApiView.as_view(), name="api-view"),
+
+
+const form = document.getElementById('loginForm')
+
+const baseUrl = 'http://127.0.0.1:8000/api';
+
+
+async function handleLogin(user, password){ 
+    try { 
+        const response = await fetch(`${baseUrl}/token/`, { 
+            method: 'POST', 
+            headers: { 
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 
+                username: user, 
+                password:password
+            })
+        });
+
+        if (!response.ok) { 
+            throw new Error('Falha no login. Verifique as credenciais.');
+        }
+        
+        const data = await response.json();
+        const accessToken = data.access;
+        const refreshToken = data.refresh
+
+        // Armazenando os tokens
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+
+    } catch (error) { 
+        console.error('Erro de login:', error);
+        alert(error.message);
+    }
+}
+
+form.addEventListener('submit', async function(e) { 
+    const user = document.getElementById('username').value
+    const password = document.getElementById('password').value
+
+    handleLogin(user, password)
+})
+
+
+Aqui, após eu fazer o login, eu pego o user e password e faço uma requisição POST para o JWT para pegar o Token do meu úsuario. 
+Quando pegar esse token, eu salvo esse access_token e o refresh_token!
+
+
+const BASE_URL = 'http://127.0.0.1:8000/api';
+const URL_REFRESH = `${BASE_URL}/token/refresh`;
+
+export function getAuthHeader() { 
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) { 
+        throw new Error('Token de acesso não encontrado. Faça login novamente.');
+    }
+
+    return { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+    };
+}
+
+// Lógica de renovação do Token
+export async function refreshAcessToken() { 
+    // Pegando o refreshToken armazenado
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) { 
+        // Forçando o logout e redirecionando se não tiver o token
+        localStorage.clear();
+        window.location.href = '/login.html';
+        throw new Error("Sessão expirada. Faça login novamente.");
+    }
+
+    try { 
+        // Requisição para pegar o refreshToken
+        const response = await fetch(URL_REFRESH, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({refresh: refreshToken})
+        });
+
+        if (!response.ok) { 
+            logout();
+            throw new Error('Refresh Token inválido ou espirado.');
+            
+        }
+
+        // Recebendo o response e transformando em JSON
+        const data = await response.json();
+        // Pegando o novo accessToken
+        const newAccessToken = data.access;
+
+        localStorage.setItem('access_token', newAccessToken);
+        console.log('Novo Access Token obtido com sucesso!');
+
+        return newAccessToken; // Retorna o novo token
+    } catch (error) { 
+        // Limpar tudo e forçar o logout
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        logout();
+        throw new Error(error.message);
+        
+    }
+}
+
+export function logout() { 
+    localStorage.clear(); 
+    window.location.href = '/login.html';
+}
+
+
+Aqui eu criei em auth-api.js para pegar o novo token que vier para api.

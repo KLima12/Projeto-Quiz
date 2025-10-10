@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     'quiz_player',
     'quiz_admin',
     'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -68,9 +70,30 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+
+    # Adicionando a permissão padrão para forçar a autentificação
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # Priorize o JWT (Authentication), a sessão/cookie deve ser a ÚLTIMA
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Deixe por último
+    ),
+
 }
 
+
+SIMPLE_JWT = {
+    # Tempo de vida do token de acesso
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    # Tempo de vida do refresh token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
