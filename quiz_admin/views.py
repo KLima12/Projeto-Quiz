@@ -1,44 +1,31 @@
-from django.shortcuts import render, redirect
-from rest_framework import generics
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Quiz
+from rest_framework import generics
 from .serializes import QuizSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
-class QuizListApiView(generics.ListCreateAPIView):
-    """
-    Api View para listar todos os quizes e criar novas opções de quiz;
-    """
-    permission_classes = (IsAuthenticated,)
+class QuizListCreateApiView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-
-    def get_permissions(self):
-        """
-        Permissões por método: GET público, POST só autenticado.
-        """
-        if self.request.method == "POST":
-            return [IsAuthenticated()]
-        return [AllowAny()]
-
-
-class TaskDetailApiView(generics.RetrieveUpdateAPIView):
-    """
-    API View para buscar editar e deletar
-    """
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,) # Protege o GET de lista e o POST
+    
+class QuizDetailUpdateDestroyApiView(generics.RetrieveDestroyAPIView): 
     queryset = Quiz.objects.all()
-    lookup_field = 'id'
+    serializer_class = QuizSerializer
+    permission_classes = (IsAuthenticated,)
+    
 
 
 def login_user(request):
     if request.method == "POST":
         username = request.POST['username']
-        print(f"{username} AQUIs")
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
